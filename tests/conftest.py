@@ -4,6 +4,7 @@ from api.app import app
 import pytest
 
 from api.schemas.product import CreateProduct, Product
+from api.schemas.user import CreateUser
 from db.client import mongo_client, mongo_db
 from repositories.products import ProductRepository
 
@@ -30,7 +31,7 @@ def created_multiple_products(faker) -> List[Product]:
     ]
     result = []
     for product in products:
-        new_object_id = ProductRepository.create_product(product).inserted_id
+        new_object_id = ProductRepository.create(product).inserted_id
         result.append(Product(_id=new_object_id, **product.model_dump()))
     return result
 
@@ -60,3 +61,27 @@ def product(faker):
         )
 
     return _create_product
+
+
+@pytest.fixture
+def user(faker):
+    def _create_user(
+        login: str | None = None,
+        password: str | None = None,
+        name: str | None = None,
+        is_superuser: bool = False,
+    ):
+        if name is None:
+            name = faker.unique.name()
+        if password is None:
+            password = faker.password()
+        if login is None:
+            login = faker.first_name()
+        return CreateUser(
+            login=login,
+            password=password,
+            name=name,
+            is_superuser=is_superuser,
+        )
+
+    return _create_user

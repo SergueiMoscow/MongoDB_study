@@ -7,7 +7,7 @@ from api.schemas.common import PER_PAGE
 
 
 class CreateProduct(BaseModel):
-    # id: uuid.UUID = Field(default_factory=uuid.uuid4, alias="_id")
+    # id: bson.ObjectId = Field(default_factory=uuid.uuid4, alias="_id")
     name: str = Field(min_length=3, max_length=30)
     category: str = Field(min_length=3, max_length=30)
     price: float = Field(..., ge=1)
