@@ -1,14 +1,14 @@
 from api.schemas.common import PER_PAGE, ResponseModel
-from api.schemas.product import CreateProduct, CreateProductResponse, ProductResponse
+from api.schemas.product import CreateProduct, CreateProductResponse, Product
 from repositories.products import ProductRepository
 
 
-async def get_all_products(page: int = 1, limit: int = PER_PAGE) -> tuple[int, int, list[ProductResponse]]:
+async def get_all_products(page: int = 1, limit: int = PER_PAGE) -> tuple[int, int, list[Product]]:
     products = ProductRepository.get_all_products(page, limit)
     return page, limit, products
 
 
-async def get_product_by_id(product_id: str) -> ProductResponse:
+async def get_product_by_id(product_id: str) -> Product:
     return ProductRepository.get_product(product_id)
 
 

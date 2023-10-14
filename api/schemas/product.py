@@ -18,7 +18,7 @@ class CreateProductResponse(BaseModel):
     new_product: str
 
 
-class ProductResponse(CreateProduct):
+class Product(CreateProduct):
     _id: bson.ObjectId
     id: str | None = None
 
@@ -31,4 +31,4 @@ class ProductResponse(CreateProduct):
 class ProductsResponse(BaseModel):
     page: int = 1
     limit: int = PER_PAGE
-    result: list[ProductResponse]
+    result: list[Product]

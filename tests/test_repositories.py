@@ -6,9 +6,8 @@ from tests.conftest import LEN_TEST_PRODUCTS
 
 
 @pytest.mark.usefixtures('db_for_test')
-def test_create_and_read_product():
-    product = CreateProduct(name='test', category='cat1', price=100)
-    created_product = ProductRepository.create_product(product)
+def test_create_and_read_product(product):
+    created_product = ProductRepository.create_product(product())
     assert created_product.acknowledged
     read_product = ProductRepository.get_product(created_product.inserted_id)
     assert read_product.category == product.category
@@ -20,3 +19,16 @@ def test_create_and_read_product():
 def test_list_product():
     products_list = ProductRepository.get_all_products()
     assert len(products_list) == LEN_TEST_PRODUCTS
+
+
+def test_update_product(product):
+    created_product = ProductRepository.create_product(product())
+    updated_product = product()
+    ProductRepository.update_product(
+        created_product.inserted_id,
+        updated_product,
+    )
+    read_product = ProductRepository.get_product(created_product.inserted_id)
+    assert read_product.name == updated_product.name
+    assert read_product.category == updated_product.category
+    assert read_product.price == updated_product.price
