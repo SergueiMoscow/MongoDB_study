@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends
 
-from api.schemas.common import Pagination, ResponseModel
+from api.schemas.common import Pagination, ResponseModel, check_object_id
 from api.schemas.product import CreateProduct, CreateProductResponse, ProductsResponse
 from services import services
 
@@ -41,7 +41,8 @@ async def get_all_products(pagination: Pagination = Depends()) -> ProductsRespon
 
 @router.get('/{product_id}')
 async def get_product(product_id: str):
-    return await services.get_product_by_id(product_id)
+    if check_object_id(product_id):
+        return await services.get_product_by_id(product_id)
 
 
 @router.patch('/{product_id}')
