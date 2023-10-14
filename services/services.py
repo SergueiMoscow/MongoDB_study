@@ -4,21 +4,21 @@ from repositories.products import ProductRepository
 
 
 async def get_all_products(page: int = 1, limit: int = PER_PAGE) -> tuple[int, int, list[Product]]:
-    products = ProductRepository.get_all_products(page, limit)
+    products = ProductRepository.get_all(page, limit)
     return page, limit, products
 
 
 async def get_product_by_id(product_id: str) -> Product:
-    return ProductRepository.get_product(product_id)
+    return ProductRepository.get_by_id(product_id)
 
 
 async def create_product(product: CreateProduct) -> CreateProductResponse:
-    result = ProductRepository.create_product(product)
+    result = ProductRepository.create(product)
     return CreateProductResponse(new_product=str(result.inserted_id))
 
 
 async def update_product(product_id: str, product: CreateProduct) -> ResponseModel:
-    result = ProductRepository.update_product(product_id, product)
+    result = ProductRepository.update(product_id, product)
     if result:
         return ResponseModel(
             code=200,

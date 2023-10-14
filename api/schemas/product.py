@@ -3,7 +3,7 @@ import time
 import bson
 from pydantic import BaseModel, Field
 
-from api.schemas.common import PER_PAGE
+from api.schemas.common import PER_PAGE, ObjectIDModel
 
 
 class CreateProduct(BaseModel):
@@ -18,9 +18,9 @@ class CreateProductResponse(BaseModel):
     new_product: str
 
 
-class Product(CreateProduct):
-    _id: bson.ObjectId
-    id: str | None = None
+class Product(CreateProduct, ObjectIDModel):
+    # _id: bson.ObjectId
+    # id: str | None = None
 
     # TODO: Вопрос: Почему это не не выдаёт id во фронт?
     @property

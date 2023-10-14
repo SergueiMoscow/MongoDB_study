@@ -1,3 +1,4 @@
+import re
 from typing import List
 from fastapi.testclient import TestClient
 from api.app import app
@@ -16,6 +17,11 @@ def db_for_test():
     yield mongo_db
     if 'test' in mongo_db.name:
         mongo_client.drop_database(mongo_db.name)
+    db_list = mongo_client.list_database_names()
+    pattern = re.compile(r'.*_test_.*')
+    for db in db_list:
+        if pattern.match(db):
+            mongo_client.drop_database(db)
 
 
 @pytest.fixture

@@ -3,7 +3,7 @@ import time
 import bson
 from pydantic import BaseModel, Field
 
-from api.schemas.common import PER_PAGE
+from api.schemas.common import PER_PAGE, ObjectIDModel
 
 
 class CreateUser(BaseModel):
@@ -18,9 +18,8 @@ class CreateProductResponse(BaseModel):
     new_user: str
 
 
-class User(CreateUser):
-    _id: bson.ObjectId
-    id: str | None = None
+class User(CreateUser, ObjectIDModel):
+    pass
 
 
 class UserResponse(BaseModel):

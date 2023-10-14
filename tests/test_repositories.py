@@ -23,6 +23,7 @@ def test_list_product():
     assert len(products_list) == LEN_TEST_PRODUCTS
 
 
+@pytest.mark.usefixtures('db_for_test')
 def test_update_product(product):
     created_product = ProductRepository.create(product())
     updated_product = product()

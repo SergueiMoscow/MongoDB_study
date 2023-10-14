@@ -42,3 +42,9 @@ def check_object_id(value: str) -> str:
 
 
 ObjectId = Annotated[str, AfterValidator(check_object_id)]
+
+
+class ObjectIDModel(BaseModel):
+    _id: ObjectId
+    id: str | None = None
+
