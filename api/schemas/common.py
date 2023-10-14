@@ -9,7 +9,7 @@ PER_PAGE = 10
 
 class Pagination(BaseModel):
     page: Optional[int] = None
-    limit: int
+    limit: int = PER_PAGE
 
     @model_validator(mode='before')
     @classmethod
@@ -23,3 +23,9 @@ class Pagination(BaseModel):
                 detail='page should be greater than or equal to 1',
             )
         return data
+
+
+class ResponseModel(BaseModel):
+    data: str | None = None
+    code: int = 200
+    message: str = 'Response'

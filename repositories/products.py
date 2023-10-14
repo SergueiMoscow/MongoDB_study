@@ -1,4 +1,5 @@
 from pymongo.results import InsertOneResult
+from bson.objectid import ObjectId
 
 from api.schemas.common import PER_PAGE
 from api.schemas.product import CreateProduct, ProductResponse
@@ -14,14 +15,14 @@ class ProductRepository:
         cursor = cls.collection.find().skip(skip_records).limit(limit)
         result = []
         for product in cursor:
-            # if product.get('id'):
             product['id'] = str(product['_id'])
             result.append(ProductResponse(**product))
         return result
 
     @classmethod
     def get_product(cls, product_id: str) -> ProductResponse:
-        cursor = cls.collection.find_one({'_id': product_id})
+        cursor = cls.collection.find_one({'_id': ObjectId(product_id)})
+        cursor['id'] = str(cursor['_id'])
         return ProductResponse(**cursor)
 
     @classmethod
@@ -30,3 +31,14 @@ class ProductRepository:
         # product_dict['id'] = bson.Binary.from_uuid(product_dict['id'])
         result = cls.collection.insert_one(product_dict)
         return result
+
+    @classmethod
+    def update_product(cls, product_id: str, new_values: CreateProduct) -> bool:
+        cursor = cls.collection.find_one({'_id': ObjectId(product_id)})
+        if cursor:
+            cursor.update(new_values.model_dump())
+            # del cursor['_id']
+            updated_product = cls.collection.update_one({'_id': ObjectId(product_id)}, {'$set': cursor})
+            if updated_product:
+                return True
+        return False
