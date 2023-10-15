@@ -24,8 +24,10 @@ class BaseRepository(ABC):
         return result
 
     @classmethod
-    def get_by_id(cls, record_id: str) -> _schema:
+    def get_by_id(cls, record_id: str) -> _schema | None:
         cursor = cls._collection.find_one({'_id': ObjectId(record_id)})
+        if cursor is None:
+            return None
         cursor['id'] = str(cursor['_id'])
         data = dict(cursor)
         return cls._schema.model_construct(**data)

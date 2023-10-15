@@ -1,3 +1,6 @@
+from fastapi import HTTPException
+from starlette import status
+
 from api.schemas.common import PER_PAGE, ResponseModel
 from api.schemas.user import CreateUser, CreateUserResponse, User
 from repositories.users import UserRepository
@@ -16,8 +19,15 @@ class CommonService:
         return page, limit, result
 
     @classmethod
-    async def get_by_id(cls, record_id: str) -> _model:
-        return cls._repository.get_by_id(record_id)
+    async def get_by_id(cls, record_id: str) -> _model | HTTPException:
+        result = cls._repository.get_by_id(record_id)
+        if result:
+            return result
+        else:
+            return HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Object not found'
+            )
 
     @classmethod
     async def create(cls, record: _create_model) -> str:
