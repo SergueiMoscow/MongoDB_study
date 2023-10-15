@@ -1,4 +1,4 @@
-from api.schemas.user import User, CreateUser, CreateUserResponse
+from api.schemas.user import CreateUser, CreateUserResponse, User
 from repositories.users import UserRepository
 from services.common import CommonService
 

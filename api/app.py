@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from api.views import products, users, orders
+from api.views import orders, products, users
 
 app = FastAPI(title='Учебный проект Магазин на MongoDB', docs_url='/')
 app.include_router(products.router)

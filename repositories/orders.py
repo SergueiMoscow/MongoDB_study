@@ -1,4 +1,4 @@
-from api.schemas.order import Order, CreateOrder
+from api.schemas.order import CreateOrder, Order
 from db.client import mongo_db
 from repositories.common import BaseRepository
 

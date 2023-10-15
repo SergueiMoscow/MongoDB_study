@@ -1,8 +1,8 @@
-from typing import Any, Optional, Annotated
+from typing import Annotated, Any, Optional
 
 from bson import ObjectId as _ObjectId
 from fastapi import HTTPException
-from pydantic import BaseModel, model_validator, AfterValidator
+from pydantic import AfterValidator, BaseModel, model_validator
 from starlette import status
 
 PER_PAGE = 10
@@ -34,10 +34,7 @@ class ResponseModel(BaseModel):
 
 def check_object_id(value: str) -> str:
     if not _ObjectId.is_valid(value):
-        raise HTTPException(
-            status_code=400,
-            detail='Invalid ObjectId'
-        )
+        raise HTTPException(status_code=400, detail='Invalid ObjectId')
     return value
 
 
@@ -47,4 +44,3 @@ ObjectId = Annotated[str, AfterValidator(check_object_id)]
 class ObjectIDModel(BaseModel):
     _id: ObjectId
     id: str | None = None
-

@@ -1,6 +1,5 @@
 import time
 
-import bson
 from pydantic import BaseModel, Field
 
 from api.schemas.common import PER_PAGE, ObjectIDModel

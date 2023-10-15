@@ -1,16 +1,16 @@
-from fastapi import HTTPException
 from typing import Any
 
+from fastapi import HTTPException
 from pydantic import BaseModel, Field, model_validator
 from starlette import status
 
-from api.schemas.common import ObjectIDModel, PER_PAGE
+from api.schemas.common import PER_PAGE, ObjectIDModel
 
 
 class CreateOrderItem(BaseModel):
     product_id: str | None = None
     product_name: str | None = None
-    quantity: float | None = Field(deault=1.0, ge=0.1)
+    quantity: float | None = Field(default=1.0, ge=0.1)
     price: float | None = Field(default=None, description='Цена')
 
     @model_validator(mode='before')

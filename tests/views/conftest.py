@@ -1,14 +1,14 @@
+import os
+import sys
+
 import pytest
 from fastapi.testclient import TestClient
 
 from api.app import app
 from api.schemas.user import CreateUser
 
-import sys
-import os
-
 # Добавляем путь к модулю tests в переменную PYTHONPATH
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 
 @pytest.fixture

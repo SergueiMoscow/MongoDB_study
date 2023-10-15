@@ -1,4 +1,3 @@
-from api.schemas.common import PER_PAGE, ResponseModel
 from api.schemas.product import CreateProduct, CreateProductResponse, Product
 from repositories.products import ProductRepository
 from services.common import CommonService

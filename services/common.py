@@ -1,5 +1,5 @@
 from api.schemas.common import PER_PAGE, ResponseModel
-from api.schemas.user import User, CreateUser, CreateUserResponse
+from api.schemas.user import CreateUser, CreateUserResponse, User
 from repositories.users import UserRepository
 
 
@@ -28,16 +28,10 @@ class CommonService:
     async def update(cls, record_id: str, record: _create_model) -> ResponseModel:
         result = cls._repository.update(record_id, record)
         if result:
-            return ResponseModel(
-                code=200,
-                data='Success',
-                message=f'{cls._verbose_name} updated'
-            )
+            return ResponseModel(code=200, data='Success', message=f'{cls._verbose_name} updated')
         else:
             return ResponseModel(
-                code=500,
-                data='Error',
-                message=f'Error  updating {cls._verbose_name}'
+                code=500, data='Error', message=f'Error  updating {cls._verbose_name}'
             )
 
     @classmethod
@@ -47,13 +41,11 @@ class CommonService:
             return ResponseModel(
                 code=200,
                 data='Success',
-                message=f'{cls._verbose_name} {record_id} has been deleted'
+                message=f'{cls._verbose_name} {record_id} has been deleted',
             )
         else:
             return ResponseModel(
-                code=500,
-                data='Error',
-                message=f'Error  updating {cls._verbose_name} {record_id}'
+                code=500, data='Error', message=f'Error  updating {cls._verbose_name} {record_id}'
             )
 
     @classmethod

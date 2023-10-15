@@ -3,9 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Body, Depends
 
 from api.schemas.common import Pagination, ResponseModel, check_object_id
-from api.schemas.product import CreateProduct, CreateProductResponse, ProductsResponse
-from api.schemas.user import CreateUser, UserResponse, CreateUserResponse
-from services import products
+from api.schemas.user import CreateUser, CreateUserResponse, UserResponse
 from services.users import UserService
 
 router = APIRouter()

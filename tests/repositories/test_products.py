@@ -1,8 +1,6 @@
 import pytest
 
-from api.schemas.product import CreateProduct
 from repositories.products import ProductRepository
-from repositories.users import UserRepository
 from tests.conftest import LEN_TEST_MULTIPLE_RECORDS
 
 

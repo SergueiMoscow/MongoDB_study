@@ -4,9 +4,7 @@ from fastapi import APIRouter, Body, Depends
 
 from api.schemas.common import Pagination, ResponseModel, check_object_id
 from api.schemas.order import CreateOrder, CreateOrderResponse, OrderResponse
-from api.schemas.user import CreateUser, UserResponse, CreateUserResponse
 from services.orders import OrderService
-from services.users import UserService
 
 router = APIRouter()
 router.prefix = '/orders'

@@ -1,10 +1,10 @@
 from abc import ABC
 
-from pymongo.results import InsertOneResult, DeleteResult
 from bson.objectid import ObjectId
+from pymongo.results import InsertOneResult
 
 from api.schemas.common import PER_PAGE
-from api.schemas.user import User, CreateUser
+from api.schemas.user import CreateUser, User
 from db.client import mongo_db
 
 
@@ -41,7 +41,9 @@ class BaseRepository(ABC):
         if cursor:
             cursor.update(new_values.model_dump())
             # del cursor['_id']
-            updated_record = cls._collection.update_one({'_id': ObjectId(record_id)}, {'$set': cursor})
+            updated_record = cls._collection.update_one(
+                {'_id': ObjectId(record_id)}, {'$set': cursor}
+            )
             if updated_record:
                 return True
         return False

@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from starlette import status
 
-from api.schemas.order import Order, CreateOrder, CreateOrderResponse, CreateOrderItem, OrderItem
+from api.schemas.order import CreateOrder, CreateOrderItem, CreateOrderResponse, Order, OrderItem
 from api.schemas.user import User
 from repositories.orders import OrderRepository
 from services.common import CommonService
@@ -47,10 +47,7 @@ class OrderService(CommonService):
         elif create_order.user_name:
             return await UserService.get_by_field('login', create_order.user_name)
         else:
-            raise HTTPException(
-                status_code=400,
-                detail='user_id or user_name must be non null'
-            )
+            raise HTTPException(status_code=400, detail='user_id or user_name must be non null')
 
     @classmethod
     async def valid_product(cls, product: CreateOrderItem):
@@ -61,5 +58,5 @@ class OrderService(CommonService):
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail='product_id or product_name must be not null'
+                detail='product_id or product_name must be not null',
             )

@@ -11,7 +11,9 @@ def test_create_user_without_body(client):
 
 def test_get_user_by_id(client, mocker, create_user):
     new_user = create_user()
-    mock_user_repository = mocker.patch.object(UserRepository, 'create', return_value='619e8f45ee462d6d876bbdbc')
+    mock_user_repository = mocker.patch.object(
+        UserRepository, 'create', return_value='619e8f45ee462d6d876bbdbc'
+    )
     model_dump = new_user.model_dump()
     response = client.post('/users/user', json={'user': model_dump})
     assert response.status_code == status.HTTP_200_OK

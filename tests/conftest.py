@@ -1,5 +1,6 @@
 import re
 from typing import List
+
 import pytest
 
 from api.schemas.product import CreateProduct, Product
