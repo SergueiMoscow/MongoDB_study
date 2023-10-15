@@ -21,6 +21,7 @@ isort = "^5.12.0"
 black = "^23.9.1"
 unify = "^0.5"
 httpx = "^0.25.0"
+pytest-mock = "^3.11.1"
 
 
 [build-system]

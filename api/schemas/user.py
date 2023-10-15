@@ -14,7 +14,7 @@ class CreateUser(BaseModel):
     created: int | float = int(time.time())
 
 
-class CreateProductResponse(BaseModel):
+class CreateUserResponse(BaseModel):
     new_user: str
 
 

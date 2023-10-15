@@ -9,7 +9,7 @@ PER_PAGE = 10
 
 
 class Pagination(BaseModel):
-    page: Optional[int] = None
+    page: Optional[int] = 1
     limit: int = PER_PAGE
 
     @model_validator(mode='before')

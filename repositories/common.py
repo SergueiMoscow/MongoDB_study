@@ -31,10 +31,8 @@ class BaseRepository(ABC):
         return cls._schema.model_construct(**data)
 
     @classmethod
-    def create(cls, record: _create_schema) -> InsertOneResult:
-        record_dict = record.model_dump()
-        # record_dict['id'] = bson.Binary.from_uuid(record_dict['id'])
-        result = cls._collection.insert_one(record_dict)
+    def create(cls, record: dict) -> InsertOneResult:
+        result = cls._collection.insert_one(record)
         return result
 
     @classmethod

@@ -9,7 +9,7 @@ from tests.conftest import LEN_TEST_PRODUCTS
 @pytest.mark.usefixtures('db_for_test')
 def test_create_and_read_product(product):
     created_product = product()
-    created = ProductRepository.create(created_product)
+    created = ProductRepository.create(created_product.model_dump())
     assert created.acknowledged
     read_product = ProductRepository.get_by_id(created.inserted_id)
     assert read_product.category == created_product.category
@@ -25,7 +25,7 @@ def test_list_product():
 
 @pytest.mark.usefixtures('db_for_test')
 def test_update_product(product):
-    created_product = ProductRepository.create(product())
+    created_product = ProductRepository.create(product().model_dump())
     updated_product = product()
     ProductRepository.update(
         created_product.inserted_id,
@@ -38,9 +38,9 @@ def test_update_product(product):
 
 
 @pytest.mark.usefixtures('db_for_test')
-def test_create_and_read_user(user):
-    new_user = user()
-    created_record = UserRepository.create(new_user)
+def test_create_and_read_user(create_user):
+    new_user = create_user()
+    created_record = UserRepository.create(new_user.model_dump())
     assert created_record.acknowledged
     read_record = UserRepository.get_by_id(created_record.inserted_id)
     assert read_record.login == new_user.login

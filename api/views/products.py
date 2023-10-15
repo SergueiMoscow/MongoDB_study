@@ -4,7 +4,8 @@ from fastapi import APIRouter, Body, Depends
 
 from api.schemas.common import Pagination, ResponseModel, check_object_id
 from api.schemas.product import CreateProduct, CreateProductResponse, ProductsResponse
-from services import services
+from services import products
+from services.products import ProductService
 
 router = APIRouter()
 router.prefix = '/products'
@@ -26,12 +27,13 @@ async def post_product(
         ),
     ]
 ) -> CreateProductResponse:
-    return await services.create_product(product)
+    new_id = await ProductService.create(product)
+    return CreateProductResponse(new_product=new_id)
 
 
 @router.get('/')
 async def get_all_products(pagination: Pagination = Depends()) -> ProductsResponse:
-    page, limit, products = await services.get_all_products(pagination.page, pagination.limit)
+    page, limit, products = await ProductService.get_all(pagination.page, pagination.limit)
     return ProductsResponse(
         page=page,
         limit=limit,
