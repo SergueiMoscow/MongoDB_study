@@ -46,5 +46,5 @@ async def update_user(user_id: str, user: CreateUser = Body()) -> ResponseModel:
 
 
 @router.delete('/{user_id}')
-async def delete_product(user_id: str) -> ResponseModel:
+async def delete_user(user_id: str) -> ResponseModel:
     return await UserService.delete(user_id)

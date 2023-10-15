@@ -1,0 +1,51 @@
+from typing import Annotated
+
+from fastapi import APIRouter, Body, Depends
+
+from api.schemas.common import Pagination, ResponseModel, check_object_id
+from api.schemas.order import CreateOrder, CreateOrderResponse, OrderResponse
+from api.schemas.user import CreateUser, UserResponse, CreateUserResponse
+from services.orders import OrderService
+from services.users import UserService
+
+router = APIRouter()
+router.prefix = '/orders'
+
+
+@router.post('/order')
+async def post_order(
+    order: Annotated[
+        CreateOrder,
+        Body(embed=True),
+    ]
+) -> CreateOrderResponse:
+    valid_order = await OrderService.validate(order)
+    new_id = await OrderService.create(valid_order)
+    return CreateOrderResponse(new_order=new_id)
+
+
+@router.get('/')
+async def get_all_orders(pagination: Pagination = Depends()) -> OrderResponse:
+    page, limit, orders = await OrderService.get_all(pagination.page, pagination.limit)
+    return OrderResponse(
+        page=page,
+        limit=limit,
+        result=orders,
+    )
+
+
+@router.get('/{order_id}')
+async def get_order(order_id: str):
+    if check_object_id(order_id):
+        return await OrderService.get_by_id(order_id)
+
+
+@router.patch('/{order_id}')
+async def update_order(order_id: str, order: CreateOrder = Body()) -> ResponseModel:
+    result = await OrderService.update(order_id, order)
+    return result
+
+
+@router.delete('/{order_id}')
+async def delete_order(order_id: str) -> ResponseModel:
+    return await OrderService.delete(order_id)

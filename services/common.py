@@ -55,3 +55,7 @@ class CommonService:
                 data='Error',
                 message=f'Error  updating {cls._verbose_name} {record_id}'
             )
+
+    @classmethod
+    async def get_by_field(cls, field_name: str, field_value: str) -> _model | None:
+        return cls._repository.get_by_field(field_name, field_value)

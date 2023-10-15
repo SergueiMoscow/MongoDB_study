@@ -53,3 +53,12 @@ class BaseRepository(ABC):
             deleted = cls._collection.delete_one({'_id': ObjectId(record_id)})
             return deleted.deleted_count
         return 0
+
+    @classmethod
+    def get_by_field(cls, field_name: str, field_value: str) -> _schema | None:
+        cursor = cls._collection.find_one({field_name: field_value})
+        if cursor is None:
+            return None
+        cursor['id'] = str(cursor['_id'])
+        data = dict(cursor)
+        return cls._schema.model_construct(**data)
