@@ -1,7 +1,8 @@
 from fastapi import HTTPException
 from starlette import status
 
-from api.schemas.order import CreateOrder, CreateOrderItem, CreateOrderResponse, Order, OrderItem
+from api.schemas.common import PER_PAGE, Pagination
+from api.schemas.order import CreateOrder, CreateOrderItem, CreateOrderResponse, Order, OrderItem, OrderRequest
 from api.schemas.user import User
 from repositories.orders import OrderRepository
 from services.common import CommonService
@@ -19,7 +20,7 @@ class OrderService(CommonService):
     @classmethod
     async def validate(cls, create_order: CreateOrder) -> Order | None:
         user = await cls.valid_user(create_order)
-        items: [dict] = []
+        items: [OrderItem] = []
         total: float = 0.0
         order_dict = {'user_id': user.id, 'user_name': user.name}
         for item in create_order.items:
@@ -34,7 +35,7 @@ class OrderService(CommonService):
                 amount=amount,
             )
             total += amount
-            items.append(valid_item.model_dump())
+            items.append(valid_item)
         order_dict['items'] = items
         order_dict['total'] = total
         result = Order(**order_dict)
@@ -60,3 +61,29 @@ class OrderService(CommonService):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='product_id or product_name must be not null',
             )
+
+    @classmethod
+    async def get_custom(cls, pagination: Pagination, params: OrderRequest) -> tuple[int, int, list[_model]]:
+        # order_request = {'time': 167803456, 'user_name': 'Alex', 'sort_by': 'time', 'sorting': 'desc'}
+        query = {}
+        if params.user_name:
+            query.update({'user_name': params.user_name})
+        if params.user_id:
+            query.update({'user_id': params.user_id})
+        if params.product_id:
+            query.update({'items.product_id': params.product_id})
+        if params.product_name:
+            query.update({'items.product_name': params.product_name})
+        if params.date_from:
+            query.update({'created': {'$gte': params.date_from}})
+        if params.date_to:
+            query.update({'created': {'$lte': params.date_to}})
+
+        result = cls._repository.get_custom(
+            pagination, query=query,
+            sort_by=str(params.sort_by.value),
+            sorting=params.sorting
+        )
+        return pagination.page, pagination.limit, result
+
+

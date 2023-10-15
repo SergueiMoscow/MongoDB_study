@@ -1,5 +1,8 @@
+import time
+from enum import Enum
 from typing import Any
 
+import pymongo
 from fastapi import HTTPException
 from pydantic import BaseModel, Field, model_validator
 from starlette import status
@@ -28,6 +31,7 @@ class CreateOrder(BaseModel):
     user_id: str | None = Field(default=None, description='ID пользователя')
     user_name: str | None = Field(default=None, description='Имя пользователя')
     items: list[CreateOrderItem] = []
+    created: int | float = int(time.time())
 
     @model_validator(mode='before')
     @classmethod
@@ -57,3 +61,26 @@ class OrderResponse(BaseModel):
     page: int = 1
     limit: int = PER_PAGE
     result: list[Order]
+
+
+class OrderSortRequest(Enum):
+    DATE: str = 'created'
+    USER_ID: str = 'user_id'
+    USER_NAME: str = 'user_name'
+
+
+class Sorting(Enum):
+    ASC: str = 'asc'
+    DESC: str = 'desc'
+
+
+class OrderRequest(BaseModel):
+    user_id: str | None = None
+    user_name: str | None = None
+    product_id: str | None = None
+    product_name: str | None = None
+    date_from: int | None = None
+    date_to: int | None = None
+    sort_by: OrderSortRequest | None = None
+    sorting: Sorting | None = None
+

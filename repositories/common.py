@@ -1,5 +1,6 @@
 from abc import ABC
 
+import pymongo.collection
 from bson.objectid import ObjectId
 from pymongo.results import InsertOneResult
 
@@ -9,19 +10,27 @@ from db.client import mongo_db
 
 
 class BaseRepository(ABC):
-    _collection = mongo_db.users
+    _collection: pymongo.collection.Collection = mongo_db.users
     _schema = User
     _create_schema = CreateUser
 
+    @staticmethod
+    def _get_skip_records(page: int, limit: int):
+        return (page - 1) * limit
+
     @classmethod
-    def get_all(cls, page: int = 1, limit: int = PER_PAGE) -> list[_schema]:
-        skip_records = (page - 1) * limit
-        cursor = cls._collection.find().skip(skip_records).limit(limit)
+    def _get_list_from_cursor(cls, cursor: pymongo.cursor) -> list[_schema]:
         result = []
         for record in cursor:
             record['id'] = str(record['_id'])
             result.append(cls._schema(**record))
         return result
+
+    @classmethod
+    def get_all(cls, page: int = 1, limit: int = PER_PAGE) -> list[_schema]:
+        skip_records = cls._get_skip_records(page, limit)
+        cursor = cls._collection.find().skip(skip_records).limit(limit)
+        return cls._get_list_from_cursor(cursor)
 
     @classmethod
     def get_by_id(cls, record_id: str) -> _schema | None:
