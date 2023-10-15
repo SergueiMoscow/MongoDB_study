@@ -39,3 +39,19 @@ class CommonService:
                 data='Error',
                 message=f'Error  updating {cls._verbose_name}'
             )
+
+    @classmethod
+    async def delete(cls, record_id: str) -> ResponseModel:
+        result = cls._repository.delete(record_id)
+        if result:
+            return ResponseModel(
+                code=200,
+                data='Success',
+                message=f'{cls._verbose_name} {record_id} has been deleted'
+            )
+        else:
+            return ResponseModel(
+                code=500,
+                data='Error',
+                message=f'Error  updating {cls._verbose_name} {record_id}'
+            )

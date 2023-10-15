@@ -4,7 +4,6 @@ from fastapi import APIRouter, Body, Depends
 
 from api.schemas.common import Pagination, ResponseModel, check_object_id
 from api.schemas.product import CreateProduct, CreateProductResponse, ProductsResponse
-from services import products
 from services.products import ProductService
 
 router = APIRouter()
@@ -44,10 +43,15 @@ async def get_all_products(pagination: Pagination = Depends()) -> ProductsRespon
 @router.get('/{product_id}')
 async def get_product(product_id: str):
     if check_object_id(product_id):
-        return await services.get_product_by_id(product_id)
+        return await ProductService.get_by_id(product_id)
 
 
 @router.patch('/{product_id}')
 async def update_product(product_id: str, product: CreateProduct = Body()) -> ResponseModel:
-    result = await services.update_product(product_id, product)
+    result = await ProductService.update(product_id, product)
     return result
+
+
+@router.delete('/{product_id}')
+async def delete_product(product_id: str) -> ResponseModel:
+    return await ProductService.delete(product_id)

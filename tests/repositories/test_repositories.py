@@ -46,3 +46,21 @@ def test_create_and_read_user(create_user):
     assert read_record.login == new_user.login
     assert read_record.name == new_user.name
     assert read_record.password == new_user.password
+
+
+@pytest.mark.usefixtures('db_for_test')
+def test_delete_user(create_user):
+    new_user = create_user()
+    created_user = UserRepository.create(new_user.model_dump())
+    inserted_id = created_user.inserted_id
+    deleted_user = UserRepository.delete(inserted_id)
+    assert deleted_user == 1
+
+
+@pytest.mark.usefixtures('db_for_test')
+def test_delete_product(product):
+    new_product = product()
+    created_product = ProductRepository.create(new_product.model_dump())
+    inserted_id = created_product.inserted_id
+    deleted_product = ProductRepository.delete(inserted_id)
+    assert deleted_product == 1

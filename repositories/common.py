@@ -1,6 +1,6 @@
 from abc import ABC
 
-from pymongo.results import InsertOneResult
+from pymongo.results import InsertOneResult, DeleteResult
 from bson.objectid import ObjectId
 
 from api.schemas.common import PER_PAGE
@@ -45,3 +45,11 @@ class BaseRepository(ABC):
             if updated_record:
                 return True
         return False
+
+    @classmethod
+    def delete(cls, record_id: str) -> int:
+        cursor = cls._collection.find_one({'_id': ObjectId(record_id)})
+        if cursor:
+            deleted = cls._collection.delete_one({'_id': ObjectId(record_id)})
+            return deleted.deleted_count
+        return 0
