@@ -1,15 +1,19 @@
 import re
+import time
 from typing import List
 
 import pytest
 
+from api.schemas.order import CreateOrder, CreateOrderItem, Order
 from api.schemas.product import CreateProduct, Product
 from api.schemas.user import CreateUser, User
 from db.client import mongo_client, mongo_db
+from repositories.orders import OrderRepository
 from repositories.products import ProductRepository
 from repositories.users import UserRepository
 
 LEN_TEST_MULTIPLE_RECORDS = 10
+SECONDS_IN_YEAR = 60 * 60 * 24 * 365
 
 
 @pytest.fixture
@@ -122,3 +126,64 @@ def user(faker):
         )
 
     return _create_user
+
+
+@pytest.fixture
+def create_item(created_multiple_products, faker):
+    def _create_item(
+        product_id: str | None = None,
+        product_name: str | None = None,
+        quantity: float | None = None,
+        price: float | None = None,
+    ):
+        if product_id is not None:
+            item_product = next(
+                (item for item in created_multiple_products if item.id == product_id), None
+            )
+        else:
+            if product_name is not None:
+                item_product = next(
+                    (item for item in created_multiple_products if item.name == product_name), None
+                )
+            else:
+                item_product = created_multiple_products[
+                    faker.random_int(0, LEN_TEST_MULTIPLE_RECORDS - 1)
+                ]
+                product_id = item_product.id
+        if quantity is None:
+            quantity = faker.random_int(1, 10)
+        if price is None:
+            price = item_product.price
+        return CreateOrderItem(
+            product_id=product_id,
+            product_name=product_name,
+            quantity=quantity,
+            price=price,
+        )
+
+    return _create_item
+
+
+@pytest.fixture
+def create_order(create_item, created_multiple_users, faker):
+    def _create_order():
+        items = [create_item() for _ in range(faker.random_int(1, LEN_TEST_MULTIPLE_RECORDS))]
+        current_user = created_multiple_users[faker.random_int(0, LEN_TEST_MULTIPLE_RECORDS - 1)]
+        return CreateOrder(
+            user_id=current_user.id,
+            username=current_user.login,
+            items=items,
+            created=faker.random_int(int(time.time()) - SECONDS_IN_YEAR, int(time.time())),
+        )
+
+    return _create_order
+
+
+@pytest.fixture
+def created_multiple_orders(create_order):
+    orders = [create_order() for _ in range(LEN_TEST_MULTIPLE_RECORDS)]
+    result = []
+    for order in orders:
+        created_order = OrderRepository.create(order.model_dump()).inserted_id
+        result.append(Order(_id=created_order, **order.model_dump()))
+    return orders

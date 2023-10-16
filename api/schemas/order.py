@@ -2,8 +2,7 @@ import time
 from enum import Enum
 from typing import Any
 
-import pymongo
-from fastapi import HTTPException
+from fastapi import HTTPException, Query
 from pydantic import BaseModel, Field, model_validator
 from starlette import status
 
@@ -82,5 +81,4 @@ class OrderRequest(BaseModel):
     date_from: int | None = None
     date_to: int | None = None
     sort_by: OrderSortRequest | None = None
-    sorting: Sorting | None = None
-
+    sorting: Sorting = Query(default=Sorting.ASC)

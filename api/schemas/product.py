@@ -18,7 +18,7 @@ class CreateProductResponse(BaseModel):
 
 
 class Product(CreateProduct, ObjectIDModel):
-    # _id: bson.ObjectId
+    # _id: ObjectId
     # id: str | None = None
 
     # TODO: Вопрос: Почему это не не выдаёт id во фронт?

@@ -6,11 +6,11 @@ check:
 	isort $(SOURCE)
 	black -l 100 -S $(SOURCE)
 	unify -r -i -c $(SOURCE)
-	pytest
+	pytest --cov-report term-missing --verbosity=2 --cov=.
 
 .PHONY: test
 test:
-	pytest
+	pytest --cov-report term-missing --verbosity=2 --cov=.
 
 .PHONY: run
 run:

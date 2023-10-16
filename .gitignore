@@ -1,3 +1,5 @@
 .idea
 .env
 notes.txt
+.coverage
+htmlcov

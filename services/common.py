@@ -24,10 +24,7 @@ class CommonService:
         if result:
             return result
         else:
-            return HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='Object not found'
-            )
+            return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Object not found')
 
     @classmethod
     async def create(cls, record: _create_model) -> str:

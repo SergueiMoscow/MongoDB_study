@@ -44,3 +44,9 @@ ObjectId = Annotated[str, AfterValidator(check_object_id)]
 class ObjectIDModel(BaseModel):
     _id: ObjectId
     id: str | None = None
+
+    @model_validator(mode='before')
+    @classmethod
+    def validate_page(cls, data: Any) -> Any:
+        data['id'] = str(data['_id'])
+        return data

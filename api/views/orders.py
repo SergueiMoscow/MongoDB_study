@@ -1,10 +1,9 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends
-from starlette.requests import Request
 
 from api.schemas.common import Pagination, ResponseModel, check_object_id
-from api.schemas.order import CreateOrder, CreateOrderResponse, OrderResponse, OrderRequest
+from api.schemas.order import CreateOrder, CreateOrderResponse, OrderRequest, OrderResponse
 from services.orders import OrderService
 
 router = APIRouter()
@@ -25,8 +24,8 @@ async def post_order(
 
 @router.get('/')
 async def get_all_orders(
-        pagination: Pagination = Depends(),
-        params: OrderRequest = Depends(),
+    pagination: Pagination = Depends(),
+    params: OrderRequest = Depends(),
 ) -> OrderResponse:
     # page, limit, orders = await OrderService.get_all(pagination.page, pagination.limit)
     page, limit, orders = await OrderService.get_custom(pagination, params)

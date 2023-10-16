@@ -1,7 +1,7 @@
 import pymongo.collection
 
 from api.schemas.common import Pagination
-from api.schemas.order import CreateOrder, Order, OrderRequest, Sorting
+from api.schemas.order import CreateOrder, Order, Sorting
 from db.client import mongo_db
 from repositories.common import BaseRepository
 
@@ -20,19 +20,17 @@ class OrderRepository(BaseRepository):
 
     @classmethod
     def get_custom(
-            cls,
-            pagination: Pagination,
-            query: dict,
-            sort_by: str | None = None,
-            sorting: Sorting | None = None
+        cls,
+        pagination: Pagination,
+        query: dict,
+        sort_by: str | None = None,
+        sorting: Sorting | None = None,
     ):
         skip_records = cls._get_skip_records(pagination.page, pagination.limit)
 
         if sort_by and sorting:
             cursor = (
-                cls
-                ._collection
-                .find(query)
+                cls._collection.find(query)
                 .sort(sort_by, cls._get_order_direction(sorting))
                 .skip(skip_records)
                 .limit(pagination.limit)

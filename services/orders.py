@@ -1,8 +1,15 @@
 from fastapi import HTTPException
 from starlette import status
 
-from api.schemas.common import PER_PAGE, Pagination
-from api.schemas.order import CreateOrder, CreateOrderItem, CreateOrderResponse, Order, OrderItem, OrderRequest
+from api.schemas.common import Pagination
+from api.schemas.order import (
+    CreateOrder,
+    CreateOrderItem,
+    CreateOrderResponse,
+    Order,
+    OrderItem,
+    OrderRequest,
+)
 from api.schemas.user import User
 from repositories.orders import OrderRepository
 from services.common import CommonService
@@ -63,7 +70,9 @@ class OrderService(CommonService):
             )
 
     @classmethod
-    async def get_custom(cls, pagination: Pagination, params: OrderRequest) -> tuple[int, int, list[_model]]:
+    async def get_custom(
+        cls, pagination: Pagination, params: OrderRequest
+    ) -> tuple[int, int, list[_model]]:
         # order_request = {'time': 167803456, 'user_name': 'Alex', 'sort_by': 'time', 'sorting': 'desc'}
         query = {}
         if params.user_name:
@@ -80,10 +89,6 @@ class OrderService(CommonService):
             query.update({'created': {'$lte': params.date_to}})
 
         result = cls._repository.get_custom(
-            pagination, query=query,
-            sort_by=str(params.sort_by.value),
-            sorting=params.sorting
+            pagination, query=query, sort_by=str(params.sort_by.value), sorting=params.sorting
         )
         return pagination.page, pagination.limit, result
-
-
