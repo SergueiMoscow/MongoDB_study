@@ -10,6 +10,7 @@ from api.schemas.order import (
     OrderItem,
     OrderRequest,
 )
+from api.schemas.product import Product
 from api.schemas.user import User
 from repositories.orders import OrderRepository
 from services.common import CommonService
@@ -25,7 +26,7 @@ class OrderService(CommonService):
     _verbose_name = 'order'
 
     @classmethod
-    async def validate(cls, create_order: CreateOrder) -> Order | None:
+    async def create_order(cls, create_order: CreateOrder) -> Order | None:
         user = await cls.valid_user(create_order)
         items: [OrderItem] = []
         total: float = 0.0
@@ -58,7 +59,7 @@ class OrderService(CommonService):
             raise HTTPException(status_code=400, detail='user_id or user_name must be non null')
 
     @classmethod
-    async def valid_product(cls, product: CreateOrderItem):
+    async def valid_product(cls, product: CreateOrderItem) -> Product:
         if product.product_id:
             return await ProductService.get_by_id(product.product_id)
         elif product.product_name:
@@ -88,7 +89,7 @@ class OrderService(CommonService):
         if params.date_to:
             query.update({'created': {'$lte': params.date_to}})
 
-        result = cls._repository.get_custom(
+        result = cls._repository.get_custom_list(
             pagination, query=query, sort_by=str(params.sort_by.value), sorting=params.sorting
         )
         return pagination.page, pagination.limit, result

@@ -17,7 +17,7 @@ async def post_order(
         Body(embed=True),
     ]
 ) -> CreateOrderResponse:
-    valid_order = await OrderService.validate(order)
+    valid_order = await OrderService.create_order(order)
     new_id = await OrderService.create(valid_order)
     return CreateOrderResponse(new_order=new_id)
 
